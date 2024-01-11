@@ -1,6 +1,6 @@
 {
     "name": "EnhancedSpectator",
-    "version_number": "1.0.1",
+    "version_number": "1.0.2",
     "website_url": "https://github.com/ProfX66/LCEnhancedSpectator",
     "description": "Enhances the spectating experience for Lethal Company.",
     "dependencies": [

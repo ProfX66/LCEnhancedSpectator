@@ -11,6 +11,7 @@ Enhances the spectating experience for Lethal Company.
 - Ability to change the zoom level while spectating
 - Ability to change the FOV while spectating
 - Potentially toggle between first and third person while spectating
+- Compatibility with other spectator mods that modify the HUD
 
 ## Configuration
 Everything is configurable via the config file or the [LethalConfig](https://thunderstore.io/c/lethal-company/p/AinaVT/LethalConfig/) menu (both the main menu and the pause menu).

@@ -1,3 +1,6 @@
+### v1.0.2
+- v47 support
+
 ### v1.0.1
 - Removed Nuget dependency weaving to be compliant with Thunderstore policies.
 
