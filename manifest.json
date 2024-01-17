@@ -1,7 +1,7 @@
 {
     "name": "EnhancedSpectator",
-    "version_number": "1.0.2",
-    "website_url": "https://github.com/ProfX66/LCEnhancedSpectator",
+    "version_number": "1.0.3",
+    "website_url": "http://pxcnet.com/LC/",
     "description": "Enhances the spectating experience for Lethal Company.",
     "dependencies": [
         "BepInEx-BepInExPack-5.4.2100",

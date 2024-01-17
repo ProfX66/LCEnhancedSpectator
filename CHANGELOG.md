@@ -1,3 +1,7 @@
+### v1.0.3
+- Fixed compatibility with other mods that enable night vision
+- Added compatibility for mods like Diversity which modify the default darkness intensity
+
 ### v1.0.2
 - v47 support
 

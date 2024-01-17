@@ -69,8 +69,18 @@ Everything is configurable via the config file or the [LethalConfig](https://thu
 <details>
   <summary>Spectator Night Vision</summary>
   
+  ### Enabling or Disabling spectator night vision
+  The ```Allowed``` setting lets you enable or disable night vision entirely.
+
+  ```cfg
+    ## Allow night vision while spectating.
+    # Setting type: Boolean
+    # Default value: true
+    Allowed = true
+  ```
+  
   ### Set the intensity of night vision
-  The ```Intensity``` setting lets change how bright the night vision is.
+  The ```Intensity``` setting lets you change how bright the night vision is.
 
   ```cfg
     ## This is how bright the night vision makes the environment when enabled.
@@ -80,14 +90,25 @@ Everything is configurable via the config file or the [LethalConfig](https://thu
     Intensity = 7500
   ```
   
-  ### Enabling or Disabling spectator night vision
-  The ```Allowed``` setting lets you enable or disable night vision entirely.
+  ### Enable darkness intensity scaling
+  The ```Modify Darkness``` setting enables the ```Darkness Modifier``` setting below. Its used to change the darkness intensity scaling. Use this if you are running mods like Diversity that have darker darkness values.
 
   ```cfg
-    ## Allow night vision while spectating.
+    ## Some mods (Diversity) change the default darkness intensity value. This setting enables the below option.
     # Setting type: Boolean
-    # Default value: true
-    Allowed = true
+    # Default value: false
+    Modify Darkness = false
+  ```
+  
+  ### Modify the darkness intensity scale
+  The ```Darkness Modifier``` setting lets you change the default darkness intensity scaling.
+
+  ```cfg
+    ## This option modifies the default darkness intensity value.
+    # Setting type: Single
+    # Default value: 1
+    # Range: 0.0 - 1.0
+    Darkness Modifier = 1
   ```
   
   ### Change the spectator night vision key binding (Requires game restart)
@@ -101,7 +122,7 @@ Everything is configurable via the config file or the [LethalConfig](https://thu
   ```
 </details>
 
-# My other Mods
-[![PrideSuits](https://gcdn.thunderstore.io/live/repository/icons/PXC-PrideSuits-1.0.0.png.256x256_q95_crop.jpg 'PrideSuits')](https://thunderstore.io/c/lethal-company/p/PXC/PrideSuits/)
-[![PrideSuitsAnimated](https://gcdn.thunderstore.io/live/repository/icons/PXC-PrideSuitsAnimated-1.0.0.png.256x256_q95_crop.jpg 'PrideSuitsAnimated')](https://thunderstore.io/c/lethal-company/p/PXC/PrideSuitsAnimated/)
-[![PrideCosmetics](https://gcdn.thunderstore.io/live/repository/icons/PXC-PrideCosmetics-1.0.1.png.256x256_q95_crop.png 'PrideCosmetics')](https://thunderstore.io/c/lethal-company/p/PXC/PrideCosmetics/)
+## Other Mods
+[![PrideSuits](https://gcdn.thunderstore.io/live/repository/icons/PXC-PrideSuits-1.0.2.png.128x128_q95.jpg 'PrideSuits')](https://thunderstore.io/c/lethal-company/p/PXC/PrideSuits/)
+[![PrideSuitsAnimated](https://gcdn.thunderstore.io/live/repository/icons/PXC-PrideSuitsAnimated-1.0.1.png.128x128_q95.jpg 'PrideSuitsAnimated')](https://thunderstore.io/c/lethal-company/p/PXC/PrideSuitsAnimated/)
+[![PrideCosmetics](https://gcdn.thunderstore.io/live/repository/icons/PXC-PrideCosmetics-1.0.2.png.128x128_q95.png 'PrideCosmetics')](https://thunderstore.io/c/lethal-company/p/PXC/PrideCosmetics/)

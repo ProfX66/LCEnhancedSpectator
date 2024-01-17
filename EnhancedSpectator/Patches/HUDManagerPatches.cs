@@ -55,6 +55,7 @@ namespace EnhancedSpectator.Patches
                 }
 
                 PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
+                
                 if (player.isPlayerDead)
                 {
                     if (StartOfRound.Instance.shipIsLeaving)
