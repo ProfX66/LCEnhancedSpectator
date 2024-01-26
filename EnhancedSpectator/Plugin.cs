@@ -8,19 +8,21 @@ using UnityEngine.InputSystem;
 using GameNetcodeStuff;
 using UnityEngine;
 using EnhancedSpectator.Patches;
+using System;
+using System.IO;
 
 namespace EnhancedSpectator
 {
     [BepInPlugin(PluginGUID, PluginName, VersionString)]
     [BepInDependency("com.rune580.LethalCompanyInputUtils", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency("ainavt.lc.lethalconfig", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("ainavt.lc.lethalconfig", BepInDependency.DependencyFlags.SoftDependency)]
     internal class LCES : BaseUnityPlugin
     {
         #region Plugin Information
 
         private const string PluginGUID = "PXC.EnhancedSpectator";
         private const string PluginName = "EnhancedSpectator";
-        private const string VersionString = "1.0.3";
+        private const string VersionString = "1.0.4";
         public static string PluginFullName { get => string.Format("{0} v{1}", PluginName, VersionString); }
         public static string PluginAuthor { get => "PXC"; }
 
@@ -173,6 +175,29 @@ namespace EnhancedSpectator
         private void NightVisionAllowed_SettingChanged(object sender, System.EventArgs e)
         {
             ToggleSpecNightVision();
+        }
+
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// Tests if an assembly is available or not
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <returns>bool</returns>
+        public static bool AssemblyExists(string Name)
+        {
+            try
+            {
+                Assembly assembly = AppDomain.CurrentDomain.Load(Name);
+                Log.LogInfo($"Found {Name}: {assembly}");
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
         }
 
         #endregion

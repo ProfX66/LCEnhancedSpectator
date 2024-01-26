@@ -12,9 +12,12 @@ Enhances the spectating experience for Lethal Company.
 - Ability to change the FOV while spectating
 - Potentially toggle between first and third person while spectating
 - Compatibility with other spectator mods that modify the HUD
+- Enhance and optimize the UI changes
 
 ## Configuration
 Everything is configurable via the config file or the [LethalConfig](https://thunderstore.io/c/lethal-company/p/AinaVT/LethalConfig/) menu (both the main menu and the pause menu).
+
+> **_NOTE:_** With **v1.0.4+** LethalConfig is a soft dependency but to get the best experience it is still required by the Thunderstore package. It allows you to change any setting for EnhancedSpectator at any time, and it will update everything in real time. If you are using [r2modman](https://thunderstore.io/c/lethal-company/p/ebkr/r2modman/) and do not want LethalConfig in your pack, you can safely remove it and this mod will still work just fine.
 
 <details>
   <summary>Spectator Clock</summary>

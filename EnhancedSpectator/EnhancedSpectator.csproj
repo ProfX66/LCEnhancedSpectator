@@ -45,11 +45,13 @@
     <Reference Include="Figgle, Version=0.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Figgle.0.5.1\lib\netstandard2.0\Figgle.dll</HintPath>
     </Reference>
-    <Reference Include="LethalCompanyInputUtils">
-      <HintPath>D:\LethalCompany\Libraries\LethalCompanyInputUtils.dll</HintPath>
+    <Reference Include="LethalCompanyInputUtils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Thunderstore\LethalCompany\profiles\ModDev-Libraries\BepInEx\plugins\Rune580-LethalCompany_InputUtils\LethalCompanyInputUtils\LethalCompanyInputUtils.dll</HintPath>
     </Reference>
-    <Reference Include="LethalConfig">
-      <HintPath>D:\LethalCompany\Libraries\LethalConfig.dll</HintPath>
+    <Reference Include="LethalConfig, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\Thunderstore\LethalCompany\profiles\ModDev-Libraries\BepInEx\plugins\AinaVT-LethalConfig\LethalConfig\LethalConfig.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -89,4 +91,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if %25COMPUTERNAME%25 == PXDESK (
+PowerShell -ExecutionPolicy Bypass -Command "&amp; { ""$(TargetDir)"" | Copy-PostBuild -Bins """EnhancedSpectator.dll""", """Figgle.dll""" -Destination """D:\Thunderstore\LethalCompany\profiles\Test\BepInEx\plugins\PXC-EnhancedSpectator""" }"
+) else (
+echo Skipping due to machine name not being Prof's
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -27,56 +27,55 @@ namespace EnhancedSpectator.Patches
         private static void Postfix(HUDManager __instance)
         {
             if (SpectatedTextSpacer == null) { SpectatedTextSpacer = ""; }
-            if (GameNetworkManager.Instance.localPlayerController != null && GameNetworkManager.Instance.localPlayerController != null)
+            if (GameNetworkManager.Instance.localPlayerController == null) return;
+
+            if (ConfigSettings.RaisedClockSupport.Value)
             {
-                if (ConfigSettings.RaisedClockSupport.Value)
-                {
-                    string TempText = Regex.Replace(__instance.spectatingPlayerText.text, @"\n", "", RegexOptions.IgnoreCase);
-                    if (string.IsNullOrEmpty(SpectatedPlayerText)) { SpectatedPlayerText = TempText; }
-                    else
-                    {
-                        if (!Regex.IsMatch(TempText, string.Format("^{0}$", Regex.Escape(SpectatedPlayerText)), RegexOptions.IgnoreCase))
-                        {
-                            SpectatedPlayerText = TempText;
-                            __instance.spectatingPlayerText.text = string.Concat(SpectatedTextSpacer, TempText);
-                        }
-                        else
-                        {
-                            if (!Regex.IsMatch(__instance.spectatingPlayerText.text, @"\n", RegexOptions.IgnoreCase))
-                            {
-                                __instance.spectatingPlayerText.text = string.Concat(SpectatedTextSpacer, TempText);
-                            }
-                        }
-                    }
-                }
+                string TempText = Regex.Replace(__instance.spectatingPlayerText.text, @"\n", "", RegexOptions.IgnoreCase);
+                if (string.IsNullOrEmpty(SpectatedPlayerText)) { SpectatedPlayerText = TempText; }
                 else
                 {
-                    __instance.spectatingPlayerText.text = Regex.Replace(__instance.spectatingPlayerText.text, @"\n", "", RegexOptions.IgnoreCase);
-                }
-
-                PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-                
-                if (player.isPlayerDead)
-                {
-                    if (StartOfRound.Instance.shipIsLeaving)
+                    if (!Regex.IsMatch(TempText, string.Format("^{0}$", Regex.Escape(SpectatedPlayerText)), RegexOptions.IgnoreCase))
                     {
-                        Light Flashlight = __instance.playersManager.spectateCamera.GetComponent<Light>();
-                        if (Flashlight != null) { Flashlight.enabled = false; }
-                        return;
+                        SpectatedPlayerText = TempText;
+                        __instance.spectatingPlayerText.text = string.Concat(SpectatedTextSpacer, TempText);
                     }
-
-                    string FlashlightBinding = LCES.Inputs.FlashlightBinding.GetBindingDisplayString();
-                    string NightVisionBinding = LCES.Inputs.NightVisionBinding.GetBindingDisplayString();
-
-                    FlashLightAction = FlashLightStatus ? "Disable" : "Enable";
-                    NightvisionAction = NightvisionStatus ? "Disable" : "Enable";
-
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("\n\n\n\n\n");
-                    if (ConfigSettings.FlashlightAllowed.Value) { sb.AppendLine(string.Format("{0} Flashlight : [{1}]", FlashLightAction, FlashlightBinding)); }
-                    if (ConfigSettings.NightVisionAllowed.Value) { sb.AppendLine(string.Format("{0} Night Vision : [{1}]", NightvisionAction, NightVisionBinding)); }
-                    __instance.holdButtonToEndGameEarlyText.text += sb.ToString();
+                    else
+                    {
+                        if (!Regex.IsMatch(__instance.spectatingPlayerText.text, @"\n", RegexOptions.IgnoreCase))
+                        {
+                            __instance.spectatingPlayerText.text = string.Concat(SpectatedTextSpacer, TempText);
+                        }
+                    }
                 }
+            }
+            else
+            {
+                __instance.spectatingPlayerText.text = Regex.Replace(__instance.spectatingPlayerText.text, @"\n", "", RegexOptions.IgnoreCase);
+            }
+
+            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
+
+            if (player.isPlayerDead)
+            {
+                if (StartOfRound.Instance.shipIsLeaving)
+                {
+                    Light Flashlight = __instance.playersManager.spectateCamera.GetComponent<Light>();
+                    if (Flashlight != null) { Flashlight.enabled = false; }
+                    return;
+                }
+
+                string FlashlightBinding = LCES.Inputs.FlashlightBinding.GetBindingDisplayString();
+                string NightVisionBinding = LCES.Inputs.NightVisionBinding.GetBindingDisplayString();
+
+                FlashLightAction = FlashLightStatus ? "Disable" : "Enable";
+                NightvisionAction = NightvisionStatus ? "Disable" : "Enable";
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("\n\n\n\n\n");
+                if (ConfigSettings.FlashlightAllowed.Value) { sb.AppendLine(string.Format("{0} Flashlight : [{1}]", FlashLightAction, FlashlightBinding)); }
+                if (ConfigSettings.NightVisionAllowed.Value) { sb.AppendLine(string.Format("{0} Night Vision : [{1}]", NightvisionAction, NightVisionBinding)); }
+                __instance.holdButtonToEndGameEarlyText.text += sb.ToString();
             }
         }
 
@@ -87,39 +86,43 @@ namespace EnhancedSpectator.Patches
         [HarmonyPrefix]
         static void ClockOnSpectate(HUDManager __instance)
         {
-            if (__instance == null || HUDManager.Instance?.Clock == null || GameNetworkManager.Instance?.localPlayerController == null)
+            if (__instance != null && (HUDManager.Instance?.Clock) != null && (GameNetworkManager.Instance?.localPlayerController) != null)
             {
-                return;
-            }
-
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-            if (player.isPlayerDead)
-            {
-                if (ConfigSettings.ClockAllowed.Value)
+                PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
+                if (player.isPlayerDead)
                 {
-                    if (HUDManager.Instance.Clock != null)
+                    if (ConfigSettings.ClockAllowed.Value)
                     {
-                        HUDManager.Instance.HideHUD(false);
-                        HUDManager.Instance.SetClockVisible(true);
-                        HUDManager.Instance.Clock.targetAlpha = 1f;
-                        HUDManager.Instance.Inventory.targetAlpha = 0f;
-                        HUDManager.Instance.PlayerInfo.targetAlpha = 0f;
-                        ClockStatus = true;
+                        if (HUDManager.Instance.Clock != null)
+                        {
+                            HUDManager.Instance.HideHUD(false);
+                            HUDManager.Instance.SetClockVisible(true);
+                            HUDManager.Instance.Clock.targetAlpha = 1f;
+                            HUDManager.Instance.Inventory.targetAlpha = 0f;
+                            HUDManager.Instance.PlayerInfo.targetAlpha = 0f;
+                            ClockStatus = true;
+                        }
+                    }
+                    else
+                    {
+                        HUDManager.Instance.HideHUD(true);
+                        HUDManager.Instance.SetClockVisible(false);
+                        ClockStatus = false;
                     }
                 }
-                else
-                {
-                    HUDManager.Instance.HideHUD(true);
-                    HUDManager.Instance.SetClockVisible(false);
-                    ClockStatus = false;
-                }
             }
-            else
-            {
-                HUDManager.Instance.PlayerInfo.targetAlpha = 1f;
-                HUDManager.Instance.Inventory.targetAlpha = 1f;
-                ClockStatus = false;
-            }
+        }
+
+        /// <summary>
+        /// Refresh data at the end of the game round
+        /// </summary>
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(StartOfRound), "AutoSaveShipData")]
+        private static void AutoSaveShipData()
+        {
+            HUDManager.Instance.PlayerInfo.targetAlpha = 1f;
+            HUDManager.Instance.Inventory.targetAlpha = 1f;
+            ClockStatus = false;
         }
     }
 }

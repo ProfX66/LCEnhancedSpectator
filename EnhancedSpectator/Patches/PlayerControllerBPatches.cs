@@ -21,6 +21,12 @@ namespace EnhancedSpectator.Patches
             if (GameNetworkManager.Instance.localPlayerController != null && GameNetworkManager.Instance.localPlayerController != null)
             {
                 PlayerControllerB CurrentPlayer = GameNetworkManager.Instance.localPlayerController;
+                if (WasToggledOnce && StartOfRound.Instance.shipIsLeaving)
+                {
+                    LCES.Log.LogInfo("Ship is leaving - Resetting toggle states...");
+                    WasToggledOnce = false;
+                }
+
                 if (CurrentPlayer.isPlayerDead && !StartOfRound.Instance.shipIsLeaving)
                 {
 #if DEBUG
