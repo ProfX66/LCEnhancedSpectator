@@ -8,16 +8,37 @@ Enhances the spectating experience for Lethal Company.
   - Will only be visible when the player being spectated is in the dungeon
 
 ## Planned Features
-- Ability to change the zoom level while spectating
-- Ability to change the FOV while spectating
-- Potentially toggle between first and third person while spectating
-- Compatibility with other spectator mods that modify the HUD
-- Enhance and optimize the UI changes
+- [ ] Ability to change the zoom level while spectating
+- [ ] Ability to change the FOV while spectating
+- [ ] Potentially toggle between first and third person while spectating
+- [_**x**_] Compatibility with other spectator mods that modify the HUD
+- [_**x**_] Enhance and optimize the UI changes
+
+## Compatibility
+The following are mods either tested to be compatible or not
+
+### Incompatible
+- [BetterSpec](https://thunderstore.io/c/lethal-company/p/ZG/BetterSpec/): This is already handled by EnhancedSpectator
+- No others have been found/reported currently
+
+### Fully Compatible (Tested by me or the community)
+- [ShipLootPlus](https://thunderstore.io/c/lethal-company/p/PXC/ShipLootPlus/)
+- [GeneralImprovements](https://thunderstore.io/c/lethal-company/p/ShaosilGaming/GeneralImprovements/)
+- [AdvancedCompany](https://thunderstore.io/c/lethal-company/p/PotatoePet/AdvancedCompany/)
+- [LCBetterClock](https://thunderstore.io/c/lethal-company/p/BlueAmulet/LCBetterClock/)
+- [EladsHUD](https://thunderstore.io/c/lethal-company/p/EladNLG/EladsHUD//)
+- Likely most mods (ill do a more comprehensive test with the most popular mods later)
+
+### Mostly Compatible (Everything is functional just has quirks)
+- [SpectateEnemies](https://thunderstore.io/c/lethal-company/p/AllToasters/SpectateEnemies/)
+  - The only part that doesn't work is when spectating a mob the night vision doesn't work (this seems to be a vanilla limitation, I am still investigating if I can change it)
+- [ToggleableNightVision](https://thunderstore.io/c/lethal-company/p/kentrosity/ToggleableNightVision/)
+  - This works fine but when toggling night vision in either mod it will disable it for the other, so any text prompts wont be synced (I'll likely fix  this in the future)
 
 ## Configuration
 Everything is configurable via the config file or the [LethalConfig](https://thunderstore.io/c/lethal-company/p/AinaVT/LethalConfig/) menu (both the main menu and the pause menu).
 
-> **_NOTE:_** With **v1.0.4+** LethalConfig is a soft dependency but to get the best experience it is still required by the Thunderstore package. It allows you to change any setting for EnhancedSpectator at any time, and it will update everything in real time. If you are using [r2modman](https://thunderstore.io/c/lethal-company/p/ebkr/r2modman/) and do not want LethalConfig in your pack, you can safely remove it and this mod will still work just fine.
+> **_NOTE:_** With **v1.0.4+** LethalConfig is a soft dependency but to get the best experience it is still required by the Thunderstore package. It allows you to change any setting for EnhancedSpectator at any time, and it will update everything in real time. If do not want LethalConfig in your pack, you can safely remove it and this mod will still work just fine.
 
 <details>
   <summary>Spectator Clock</summary>
@@ -33,13 +54,24 @@ Everything is configurable via the config file or the [LethalConfig](https://thu
   ```
   
   ### Move the "(Specating: Player)" text down
-  The ```Rasied Clock Support``` setting lets you move the spectating text down so it doesnt interfere with the clock if you are using mods that move the clocks position higher (e.g. [LCBetterClock](https://thunderstore.io/c/lethal-company/p/BlueAmulet/LCBetterClock/)).
+  The ```Raised Clock Support``` setting lets you move the spectating text down so it doesn't interfere with the clock if you are using mods that move the clocks position higher (e.g. [LCBetterClock](https://thunderstore.io/c/lethal-company/p/BlueAmulet/LCBetterClock/)).
 
   ```cfg
     ## Moves the text showing who you are spectating down a bit to support mods that move the clock position higher (e.g. LCBetterClock).
     # Setting type: Boolean
     # Default value: false
-    Rasied Clock Support = false
+    Raised Clock Support = false
+  ```
+
+  ### How much to move the "(Specating: Player)" text down/up
+  This is how much to offset the spectating text element down or up. The text element is actually moved so this retains support for any mod that adds text to it (e.g. [SpectateEnemies](https://thunderstore.io/c/lethal-company/p/AllToasters/SpectateEnemies/))
+
+  ```cfg
+    ## How much to offset the spectating text by on the Y axis.
+    # Setting type: Single
+    # Default value: -25
+    # Range: -465 - 30
+    Offset = -25
   ```
   
 </details>
@@ -126,6 +158,7 @@ Everything is configurable via the config file or the [LethalConfig](https://thu
 </details>
 
 ## Other Mods
+[![ShipLootPlus](https://gcdn.thunderstore.io/live/repository/icons/PXC-ShipLootPlus-1.0.0.png.128x128_q95.png 'ShipLootPlus')](https://thunderstore.io/c/lethal-company/p/PXC/ShipLootPlus/)
 [![PrideSuits](https://gcdn.thunderstore.io/live/repository/icons/PXC-PrideSuits-1.0.2.png.128x128_q95.jpg 'PrideSuits')](https://thunderstore.io/c/lethal-company/p/PXC/PrideSuits/)
 [![PrideSuitsAnimated](https://gcdn.thunderstore.io/live/repository/icons/PXC-PrideSuitsAnimated-1.0.1.png.128x128_q95.jpg 'PrideSuitsAnimated')](https://thunderstore.io/c/lethal-company/p/PXC/PrideSuitsAnimated/)
 [![PrideCosmetics](https://gcdn.thunderstore.io/live/repository/icons/PXC-PrideCosmetics-1.0.2.png.128x128_q95.png 'PrideCosmetics')](https://thunderstore.io/c/lethal-company/p/PXC/PrideCosmetics/)
