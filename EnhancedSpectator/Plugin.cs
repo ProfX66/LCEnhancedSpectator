@@ -3,40 +3,36 @@ using BepInEx.Logging;
 using HarmonyLib;
 using EnhancedSpectator.Utils;
 using Figgle;
-using System.Reflection;
 using UnityEngine.InputSystem;
 using GameNetcodeStuff;
 using UnityEngine;
 using EnhancedSpectator.Patches;
-using System;
-using System.IO;
+using BepInEx.Bootstrap;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace EnhancedSpectator
 {
-    [BepInPlugin(PluginGUID, PluginName, VersionString)]
+    public class PluginMetadata
+    {
+        public const string Author = "PXC";
+        public const string Name = "EnhancedSpectator";
+        public const string Id = "PXC.EnhancedSpectator";
+        public const string Version = "1.0.5";
+        public string FullName => string.Format("{0} v{1}", Name, Version);
+    }
+
+    [BepInPlugin(PluginMetadata.Id, PluginMetadata.Name, PluginMetadata.Version)]
     [BepInDependency("com.rune580.LethalCompanyInputUtils", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("ainavt.lc.lethalconfig", BepInDependency.DependencyFlags.SoftDependency)]
     internal class LCES : BaseUnityPlugin
     {
-        #region Plugin Information
+        #region Plugin Entry
 
-        private const string PluginGUID = "PXC.EnhancedSpectator";
-        private const string PluginName = "EnhancedSpectator";
-        private const string VersionString = "1.0.4";
-        public static string PluginFullName { get => string.Format("{0} v{1}", PluginName, VersionString); }
-        public static string PluginAuthor { get => "PXC"; }
-
-        #endregion
-
-        #region Plugin Declarations
-
-        public static ManualLogSource Log = new ManualLogSource(PluginName);
-        public static ConfigInputs Inputs { get; set; }
+        public static PluginMetadata pluginMetadata = new PluginMetadata();
+        public static ManualLogSource Log = new ManualLogSource(PluginMetadata.Id);
         public static LCES Instance;
-
-        #endregion
-
-        #region Entry
+        public static ConfigInputs Inputs { get; set; }
 
         /// <summary>
         /// Plugin entry point
@@ -45,9 +41,17 @@ namespace EnhancedSpectator
         {
             if (Instance == null) { Instance = this; }
             Log = Logger;
-            Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly(), PluginGUID);
+            Log.LogInfo($"Initializing plugin: {pluginMetadata.FullName} by {PluginMetadata.Author}");
 
-            Log.LogInfo(string.Format("Initializing plugin: {0} by {1}", PluginFullName, PluginAuthor));
+            Harmony.CreateAndPatchAll(typeof(HUDManagerPatches));
+            Log.LogInfo("[Patched] HUDManager");
+
+            Harmony.CreateAndPatchAll(typeof(PlayerControllerBPatches));
+            Log.LogInfo("[Patched] PlayerControllerB");
+
+            Harmony.CreateAndPatchAll(typeof(StartOfRoundPatches));
+            Log.LogInfo("[Patched] StartOfRound");
+
             HUDManagerPatches.SpectatedTextSpacer = "\n\n";
             ConfigSettings.Initialize(Config, "Enhances the spectating experience.");
 
@@ -57,7 +61,12 @@ namespace EnhancedSpectator
             ConfigSettings.FlashlightAllowed.SettingChanged += FlashlightAllowed_SettingChanged;
             ConfigSettings.NightVisionAllowed.SettingChanged += NightVisionAllowed_SettingChanged;
 
-            Log.LogInfo(string.Format("Loaded!\n{0}", FiggleFonts.Doom.Render(PluginFullName)));
+#if DEBUG
+            Log.LogWarning($"Loaded! (IN DEBUG)\n{FiggleFonts.Doom.Render(pluginMetadata.FullName)}");
+#endif
+#if !DEBUG
+            Log.LogInfo($"Loaded!\n{FiggleFonts.Doom.Render(pluginMetadata.FullName)}");
+#endif
         }
 
         #endregion
@@ -182,22 +191,22 @@ namespace EnhancedSpectator
         #region Helpers
 
         /// <summary>
-        /// Tests if an assembly is available or not
+        /// Tests if a plugin is available or not
         /// </summary>
         /// <param name="Name"></param>
         /// <returns>bool</returns>
-        public static bool AssemblyExists(string Name)
+        public static bool PluginExists(string Name, bool ShowWarning = true)
         {
-            try
+            if (Chainloader.PluginInfos.ContainsKey(Name))
             {
-                Assembly assembly = AppDomain.CurrentDomain.Load(Name);
-                Log.LogInfo($"Found {Name}: {assembly}");
+                KeyValuePair<string, PluginInfo> plugin = Chainloader.PluginInfos.FirstOrDefault(n => n.Key == Name);
+
+                if (ShowWarning) Log.LogInfo($"[SoftDependency] Found plugin: {plugin.Value.Metadata.Name} ({plugin.Value.Metadata.GUID}) v{plugin.Value.Metadata.Version} - Initializing methods...");
                 return true;
             }
-            catch (FileNotFoundException)
-            {
-                return false;
-            }
+
+            if (ShowWarning) Log.LogWarning($"[SoftDependency] Unable to find plugin '{Name}' - Skipping its initialization!");
+            return false;
         }
 
         #endregion

@@ -17,6 +17,7 @@ namespace EnhancedSpectator.Utils
         public static ConfigEntry<string> FlashlightKeybind;
         public static ConfigEntry<bool> ClockAllowed;
         public static ConfigEntry<bool> RaisedClockSupport;
+        public static ConfigEntry<float> RaisedClockOffset;
 
         /// <summary>
         /// Initializes the configuration options
@@ -25,35 +26,27 @@ namespace EnhancedSpectator.Utils
         /// <param name="description"></param>
         public static void Initialize(ConfigFile config, string description)
         {
-            #region Night Vision
+            string category = "Night Vision";
+            NightVisionAllowed = config.Bind<bool>(category, "Allowed", true, "Allow night vision while spectating.");
+            NightVisionIntensity = config.Bind<float>(category, "Intensity", 7500f, "This is how bright the night vision makes the environment when enabled.");
+            ModifyDarkness = config.Bind<bool>(category, "Modify Darkness", false, "Some mods (Diversity) change the default darkness intensity value. This setting enables the below option.");
+            DarknessModifier = config.Bind<float>(category, "Darkness Modifier", 1f, "This option modifies the default darkness intensity value.");
+            NightVisionKeybind = config.Bind<string>(category, "Keybind", "<Keyboard>/n", "Input binding to toggle night vision while spectating.");
 
-            NightVisionAllowed = config.Bind<bool>("Night Vision", "Allowed", true, "Allow night vision while spectating.");
-            NightVisionIntensity = config.Bind<float>("Night Vision", "Intensity", 7500f, "This is how bright the night vision makes the environment when enabled.");
-            ModifyDarkness = config.Bind<bool>("Night Vision", "Modify Darkness", false, "Some mods (Diversity) change the default darkness intensity value. This setting enables the below option.");
-            DarknessModifier = config.Bind<float>("Night Vision", "Darkness Modifier", 1f, "This option modifies the default darkness intensity value.");
-            NightVisionKeybind = config.Bind<string>("Night Vision", "Keybind", "<Keyboard>/n", "Input binding to toggle night vision while spectating.");
+            category = "Flashlight";
+            FlashlightAllowed = config.Bind<bool>(category, "Allowed", true, "Allow flashlight while spectating.");
+            FlashlightKeybind = config.Bind<string>(category, "Keybind", "<Keyboard>/f", "Input binding to toggle flashlight while spectating.");
 
-            #endregion
-
-            #region Flashlight
-
-            FlashlightAllowed = config.Bind<bool>("Flashlight", "Allowed", true, "Allow flashlight while spectating.");
-            FlashlightKeybind = config.Bind<string>("Flashlight", "Keybind", "<Keyboard>/f", "Input binding to toggle flashlight while spectating.");
-
-            #endregion
-
-            #region Clock
-
-            ClockAllowed = config.Bind<bool>("Clock", "Allowed", true, "Allow clock while spectating.");
-            RaisedClockSupport = config.Bind<bool>("Clock", "Rasied Clock Support", false, "Moves the text showing who you are spectating down a bit to support mods that move the clock position higher (e.g. LCBetterClock).");
-
-            #endregion
+            category = "Clock";
+            ClockAllowed = config.Bind<bool>(category, "Allowed", true, "Allow clock while spectating.");
+            RaisedClockSupport = config.Bind<bool>(category, "Raised Clock Support", false, "Moves the text showing who you are spectating down a bit to support mods that move the clock position higher (e.g. LCBetterClock).");
+            RaisedClockOffset = config.Bind<float>(category, "Offset", -25f, "How much to offset the spectating text by on the Y axis.");
 
             try
             {
-                if (AssemblyExists("LethalConfig")) SetupLethalConfig(description);
+                if (PluginExists("ainavt.lc.lethalconfig")) SetupLethalConfig(description);
             }
-            catch { Log.LogWarning("LethalSettings was not found - Skipping its initialization..."); }
+            catch { }
         }
 
         private static void SetupLethalConfig(string description)
@@ -74,6 +67,7 @@ namespace EnhancedSpectator.Utils
             //Clock
             LethalConfigManager.AddConfigItem(new BoolCheckBoxConfigItem(ClockAllowed, false));
             LethalConfigManager.AddConfigItem(new BoolCheckBoxConfigItem(RaisedClockSupport, false));
+            LethalConfigManager.AddConfigItem(new FloatSliderConfigItem(RaisedClockOffset, new FloatSliderOptions { Min = -465f, Max = 30f, RequiresRestart = false }));
 
         }
     }

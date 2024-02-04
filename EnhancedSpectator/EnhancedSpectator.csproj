@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="Patches\HUDManagerPatches.cs" />
     <Compile Include="Patches\PlayerControllerBPatches.cs" />
+    <Compile Include="Patches\StartOfRoundPatches.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ConfigInputs.cs" />
@@ -93,7 +94,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if %25COMPUTERNAME%25 == PXDESK (
-PowerShell -ExecutionPolicy Bypass -Command "&amp; { ""$(TargetDir)"" | Copy-PostBuild -Bins """EnhancedSpectator.dll""", """Figgle.dll""" -Destination """D:\Thunderstore\LethalCompany\profiles\Test\BepInEx\plugins\PXC-EnhancedSpectator""" }"
+PowerShell -ExecutionPolicy Bypass -Command "&amp; { ""$(TargetDir)"" | Copy-PostBuild -Bins """EnhancedSpectator.dll""", """Figgle.dll""" -Destination """D:\Thunderstore\LethalCompany\profiles\ModDev\BepInEx\plugins\PXC-EnhancedSpectator""" }"
 ) else (
 echo Skipping due to machine name not being Prof's
 )</PostBuildEvent>
