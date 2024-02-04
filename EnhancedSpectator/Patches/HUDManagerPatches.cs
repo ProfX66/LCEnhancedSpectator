@@ -17,8 +17,12 @@ namespace EnhancedSpectator.Patches
         public static string SpectatedTextSpacer { get; set; }
         public static bool FlashLightStatus { get; set; }
         public static bool NightvisionStatus { get; set; }
+        public static bool FoundSpectating { get; set; }
+        
         public static bool? ClockStatus { get; set; }
         public static bool? ModifiedSpectateText { get; set; }
+        public static GameObject Spectating { get; set; }
+        public static Vector3 SpectatingPos { get; set; }
 
         /// <summary>
         /// HUD patches to modify the spectator HUD items
@@ -29,38 +33,61 @@ namespace EnhancedSpectator.Patches
             if (SpectatedTextSpacer == null) { SpectatedTextSpacer = ""; }
             if (GameNetworkManager.Instance.localPlayerController == null) return;
 
+            if (Spectating == null) {  }
+
+            Spectating = Spectating ?? (Spectating = GameObject.Find("/Systems/UI/Canvas/DeathScreen/SpectateUI/Spectating"));
+            if (!FoundSpectating && Spectating)
+            {
+                FoundSpectating = true;
+                SpectatingPos = Spectating.transform.localPosition;
+            }
+
             if (ConfigSettings.RaisedClockSupport.Value)
             {
-                string TempText = Regex.Replace(__instance.spectatingPlayerText.text, @"\n", "", RegexOptions.IgnoreCase);
-                if (string.IsNullOrEmpty(SpectatedPlayerText)) { SpectatedPlayerText = TempText; }
-                else
+                if (!Spectating)
                 {
-                    if (!Regex.IsMatch(TempText, string.Format("^{0}$", Regex.Escape(SpectatedPlayerText)), RegexOptions.IgnoreCase))
-                    {
-                        SpectatedPlayerText = TempText;
-                        __instance.spectatingPlayerText.text = string.Concat(SpectatedTextSpacer, TempText);
-                    }
+                    string TempText = Regex.Replace(__instance.spectatingPlayerText.text, @"\n", "", RegexOptions.IgnoreCase);
+                    if (string.IsNullOrEmpty(SpectatedPlayerText)) { SpectatedPlayerText = TempText; }
                     else
                     {
-                        if (!Regex.IsMatch(__instance.spectatingPlayerText.text, @"\n", RegexOptions.IgnoreCase))
+                        if (!Regex.IsMatch(TempText, string.Format("^{0}$", Regex.Escape(SpectatedPlayerText)), RegexOptions.IgnoreCase))
                         {
+                            SpectatedPlayerText = TempText;
                             __instance.spectatingPlayerText.text = string.Concat(SpectatedTextSpacer, TempText);
                         }
+                        else
+                        {
+                            if (!Regex.IsMatch(__instance.spectatingPlayerText.text, @"\n", RegexOptions.IgnoreCase))
+                            {
+                                __instance.spectatingPlayerText.text = string.Concat(SpectatedTextSpacer, TempText);
+                            }
+                        }
                     }
+                }
+                else
+                {
+                    Spectating.transform.localPosition = new Vector3(SpectatingPos.x, SpectatingPos.y + ConfigSettings.RaisedClockOffset.Value, SpectatingPos.z);
                 }
             }
             else
             {
-                __instance.spectatingPlayerText.text = Regex.Replace(__instance.spectatingPlayerText.text, @"\n", "", RegexOptions.IgnoreCase);
+                if (!Spectating)
+                {
+                    __instance.spectatingPlayerText.text = Regex.Replace(__instance.spectatingPlayerText.text, @"\n", "", RegexOptions.IgnoreCase);
+                }
+                else
+                {
+                    Spectating.transform.localPosition = SpectatingPos;
+                }
             }
 
             PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
 
             if (player.isPlayerDead)
             {
+                Light Flashlight = __instance.playersManager.spectateCamera.GetComponent<Light>();
                 if (StartOfRound.Instance.shipIsLeaving)
                 {
-                    Light Flashlight = __instance.playersManager.spectateCamera.GetComponent<Light>();
                     if (Flashlight != null) { Flashlight.enabled = false; }
                     return;
                 }
@@ -68,7 +95,8 @@ namespace EnhancedSpectator.Patches
                 string FlashlightBinding = LCES.Inputs.FlashlightBinding.GetBindingDisplayString();
                 string NightVisionBinding = LCES.Inputs.NightVisionBinding.GetBindingDisplayString();
 
-                FlashLightAction = FlashLightStatus ? "Disable" : "Enable";
+                FlashLightStatus = Flashlight.enabled;
+                FlashLightAction = Flashlight.enabled ? "Disable" : "Enable";
                 NightvisionAction = NightvisionStatus ? "Disable" : "Enable";
 
                 StringBuilder sb = new StringBuilder();
@@ -111,18 +139,6 @@ namespace EnhancedSpectator.Patches
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Refresh data at the end of the game round
-        /// </summary>
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(StartOfRound), "AutoSaveShipData")]
-        private static void AutoSaveShipData()
-        {
-            HUDManager.Instance.PlayerInfo.targetAlpha = 1f;
-            HUDManager.Instance.Inventory.targetAlpha = 1f;
-            ClockStatus = false;
         }
     }
 }
