@@ -10,6 +10,7 @@ namespace EnhancedSpectator.Patches
     {
         internal static bool NightVisionToggled = false;
         internal static bool WasToggledOnce = false;
+        public static bool IsDead = false;
 
         /// <summary>
         /// PlayerControllerB patches to enable the use of night vision while spectating
@@ -25,6 +26,8 @@ namespace EnhancedSpectator.Patches
                 {
                     LCES.Log.LogInfo("Ship is leaving - Resetting toggle states...");
                     WasToggledOnce = false;
+                    IsDead = false;
+                    NightVisionToggle(__instance, false);
                 }
 
                 if (CurrentPlayer.isPlayerDead && !StartOfRound.Instance.shipIsLeaving)
@@ -33,7 +36,7 @@ namespace EnhancedSpectator.Patches
                     LCES.Log.LogInfo("PlayerControllerBPatches.Prefix => Player Dead");
 #endif
                     NightVisionToggle(__instance, NightVisionToggled);
-                    if (!WasToggledOnce) { WasToggledOnce = true; }
+                    if (!WasToggledOnce) { WasToggledOnce = true; IsDead = true; }
                 }
                 else
                 {
@@ -65,14 +68,16 @@ namespace EnhancedSpectator.Patches
         /// </summary>
         /// <param name="__instance"></param>
         /// <param name="ToggleAction"></param>
-        private static void NightVisionToggle(PlayerControllerB __instance, bool ToggleAction)
+        public static void NightVisionToggle(PlayerControllerB __instance, bool ToggleAction)
         {
 #if DEBUG
-            LCES.Log.LogInfo(string.Format("PlayerControllerBPatches.NightVisionToggle => ToggleAction: {0}", ToggleAction.ToString()));
+            LCES.Log.LogInfo(string.Format("[{0}/{1}] PlayerControllerBPatches.NightVisionToggle => ToggleAction: {2}", __instance.isPlayerDead, IsDead, ToggleAction.ToString()));
+            LCES.Log.LogWarning($"Dead? {__instance.isPlayerDead}\nIsServer? {__instance.IsServer}\nisPlayerControlled? {__instance.isPlayerControlled}\nIsLocalPlayer: {__instance.IsLocalPlayer}\nNull? {__instance == null}");
 #endif
             if (!ConfigSettings.NightVisionAllowed.Value) { ToggleAction = false; }
+            if (!IsDead) { ToggleAction = false; }
 #if DEBUG
-            LCES.Log.LogInfo(string.Format("PlayerControllerBPatches.NightVisionToggle => Allowed => ToggleAction: {0}", ToggleAction.ToString()));
+            LCES.Log.LogInfo(string.Format("[{0}/{1}] PlayerControllerBPatches.NightVisionToggle => Allowed => ToggleAction: {2}", __instance.isPlayerDead, IsDead, ToggleAction.ToString()));
 #endif
             if (ToggleAction)
             {
